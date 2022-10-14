@@ -34,7 +34,8 @@ client.once('ready', () => {
                             const channel = client.channels.cache.get(gameData.channel);
                             channel.send("Please stop for a moment, the X-Card has been played!");
                             set(ref(db, 'X-Archive/' + timestamp), {
-                                game: Xgame.game
+                                game: Xgame.game,
+                                msg: Xgame.msg,
                             }).then(() => {
                                 remove(ref(db, 'X/' + timestamp));
                             }).catch((e) => {
@@ -46,7 +47,8 @@ client.once('ready', () => {
                         } else {
                             console.log("No data available");
                             set(ref(db, 'X-Archive/' + timestamp), {
-                                game: Xgame.game
+                                game: Xgame.game,
+                                msg: Xgame.msg,
                             }).then(() => {
                                 remove(ref(db, 'X/' + timestamp));
                             }).catch((e) => {
