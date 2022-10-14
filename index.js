@@ -32,7 +32,10 @@ client.once('ready', () => {
                         if (game.exists()) {
                             const gameData = game.val();
                             const channel = client.channels.cache.get(gameData.channel);
-                            channel.send("Please stop for a moment, the X-Card has been played!");
+                            channel.send("Please stop for a moment, the X-Card has been played.");
+                            if (Xgame.msg) {
+                                channel.send("The following message was included: " + Xgame.msg);
+                            }
                             set(ref(db, 'X-Archive/' + timestamp), {
                                 game: Xgame.game,
                                 msg: Xgame.msg,
