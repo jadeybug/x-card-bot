@@ -1,6 +1,6 @@
 // Require the necessary discord.js classes
 import { Client, GatewayIntentBits } from 'discord.js';
-import config from './config.json' assert { type: "json" };
+import config from './config.json';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, child, onValue, get, remove, update } from "firebase/database";

@@ -1,6 +1,5 @@
-import { assert } from '@firebase/util';
 import { REST, SlashCommandBuilder, Routes } from 'discord.js';
-import config from './config.json' assert {type:"json"};
+import config from './config.json';
 
 const commands = [
 	new SlashCommandBuilder().setName('xgame').setDescription('Registers a new game to this channel.'),
