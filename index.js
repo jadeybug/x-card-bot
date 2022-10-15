@@ -25,75 +25,75 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const exp = express()
 const port = 3000
 
-// When the client is ready, run this code (only once)
-client.once('ready', () => {
-    console.log("ready");
-	onValue(ref(db, 'X'), (X) => {
-        if (X && X.val()) {
-            Object.entries(X.val()).forEach(([timestamp, Xgame]) => {
-                if (Xgame && !Xgame?.notified) {
-                    get(ref(db, 'games/' + Xgame.game)).then((game) => {
-                        if (game.exists()) {
-                            const gameData = game.val();
-                            const channel = client.channels.cache.get(gameData.channel);
-                            channel.send("Please stop for a moment, the X-Card has been played.");
-                            if (Xgame.msg) {
-                                channel.send("The following message was included: " + Xgame.msg);
-                            }
-                            set(ref(db, 'X-Archive/' + timestamp), {
-                                game: Xgame.game,
-                                msg: Xgame.msg,
-                            }).then(() => {
-                                remove(ref(db, 'X/' + timestamp));
-                            }).catch((e) => {
-                                console.log(e);
-                                update(ref(db, 'X/' + timestamp), {
-                                    notified: true
-                                })
-                            });
-                        } else {
-                            console.log("No data available");
-                            set(ref(db, 'X-Archive/' + timestamp), {
-                                game: Xgame.game,
-                                msg: Xgame.msg,
-                            }).then(() => {
-                                remove(ref(db, 'X/' + timestamp));
-                            }).catch((e) => {
-                                console.log(e);
-                                update(ref(db, 'X/' + timestamp), {
-                                    notified: true
-                                })
-                            });
-                        }
-                    }).catch((error) => {
-                        console.error(error);
-                    });
-                }   
-            })
-        }
-    })
-});
-
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-
-	const { commandName } = interaction;
-
-	if (commandName === 'xgame') {
-        const gameKey = push(child(ref(db), 'games')).key;
-        set(ref(db, `games/${gameKey}`), {
-            guild: interaction.guildId,
-            channel:interaction.channelId,
-        });
-		await interaction.reply("https://www.geekfusion.ca/xcard/?game=" + gameKey);
-	}
-});
-
 exp.get('/', (req, res) => {
     res.send('X Card Bot is active')
-  })
+})
   
 exp.listen(port, () => {
+    // When the client is ready, run this code (only once)
+    client.once('ready', () => {
+        console.log("ready");
+        onValue(ref(db, 'X'), (X) => {
+            if (X && X.val()) {
+                Object.entries(X.val()).forEach(([timestamp, Xgame]) => {
+                    if (Xgame && !Xgame?.notified) {
+                        get(ref(db, 'games/' + Xgame.game)).then((game) => {
+                            if (game.exists()) {
+                                const gameData = game.val();
+                                const channel = client.channels.cache.get(gameData.channel);
+                                channel.send("Please stop for a moment, the X-Card has been played.");
+                                if (Xgame.msg) {
+                                    channel.send("The following message was included: " + Xgame.msg);
+                                }
+                                set(ref(db, 'X-Archive/' + timestamp), {
+                                    game: Xgame.game,
+                                    msg: Xgame.msg,
+                                }).then(() => {
+                                    remove(ref(db, 'X/' + timestamp));
+                                }).catch((e) => {
+                                    console.log(e);
+                                    update(ref(db, 'X/' + timestamp), {
+                                        notified: true
+                                    })
+                                });
+                            } else {
+                                console.log("No data available");
+                                set(ref(db, 'X-Archive/' + timestamp), {
+                                    game: Xgame.game,
+                                    msg: Xgame.msg,
+                                }).then(() => {
+                                    remove(ref(db, 'X/' + timestamp));
+                                }).catch((e) => {
+                                    console.log(e);
+                                    update(ref(db, 'X/' + timestamp), {
+                                        notified: true
+                                    })
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error(error);
+                        });
+                    }   
+                })
+            }
+        })
+    });
+
+    client.on('interactionCreate', async interaction => {
+        if (!interaction.isChatInputCommand()) return;
+
+        const { commandName } = interaction;
+
+        if (commandName === 'xgame') {
+            const gameKey = push(child(ref(db), 'games')).key;
+            set(ref(db, `games/${gameKey}`), {
+                guild: interaction.guildId,
+                channel:interaction.channelId,
+            });
+            await interaction.reply("https://www.geekfusion.ca/xcard/?game=" + gameKey);
+        }
+    });
+
     // Login to Discord with your client's token
     client.login(process.env.DISCORD_JS_TOKEN);
 })
