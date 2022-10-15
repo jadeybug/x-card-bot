@@ -21,9 +21,9 @@ const db = getDatabase(app);
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
+    console.log("ready");
 	onValue(ref(db, 'X'), (X) => {
         if (X && X.val()) {
             Object.entries(X.val()).forEach(([timestamp, Xgame]) => {
@@ -85,6 +85,5 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-
 // Login to Discord with your client's token
-client.login(process.env.DISCORD_JS_TOKEN).then(() => console.log("logged in"));
+client.login(process.env.DISCORD_JS_TOKEN);
