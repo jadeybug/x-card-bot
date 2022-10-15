@@ -3,6 +3,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, child, onValue, get, remove, update } from "firebase/database";
+import express from 'express';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCDBjgpkeAr4PG6HtFYXElxr_0Hz07VlTY",
@@ -20,6 +21,9 @@ const db = getDatabase(app);
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+const exp = express()
+const port = 3000
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
@@ -85,5 +89,12 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-// Login to Discord with your client's token
-client.login(process.env.DISCORD_JS_TOKEN);
+exp.get('/', (req, res) => {
+    res.send('X Card Bot is active')
+  })
+  
+exp.listen(port, () => {
+    // Login to Discord with your client's token
+    client.login(process.env.DISCORD_JS_TOKEN);
+})
+
